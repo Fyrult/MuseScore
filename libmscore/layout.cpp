@@ -2827,7 +2827,7 @@ void Score::getNextMeasure(LayoutContext& lc)
                               ChordRest* cr = segment.cr(t);
                               if (cr) {
                                     cr->layout0(&as);
-                                    cr->layoutArticulations();
+                                    // cr->layoutArticulations();
                                     }
                               }
                         }
@@ -2843,8 +2843,16 @@ void Score::getNextMeasure(LayoutContext& lc)
 
       for (int staffIdx = 0; staffIdx < score()->nstaves(); ++staffIdx) {
             for (Segment& segment : measure->segments()) {
-                  if (segment.isChordRestType())
+                  if (segment.isChordRestType()) {
+                        int track    = staffIdx * VOICES;
+                        int endTrack = track + VOICES;
+                        for (int t = track; t < endTrack; ++t) {
+                              ChordRest* cr = segment.cr(t);
+                              if (cr)
+                                    cr->layoutArticulations();
+                              }
                         layoutChords1(&segment, staffIdx);
+                        }
                   }
             }
 
